@@ -5,3 +5,9 @@ def enqueue(my_queue, element):
 
 def dequeue(my_queue):
     return lt.delete_element(my_queue,0)
+
+def new_queue():
+    return lt.new_list()
+
+def is_empty(my_queue):
+    return lt.is_empty(my_queue)
