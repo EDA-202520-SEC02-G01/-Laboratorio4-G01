@@ -29,6 +29,7 @@ import os
 import time
 from DataStructures.List import array_list as lt
 from DataStructures.Queue import queue as q
+from DataStructures.Stack import stack as st
 
 
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
@@ -351,16 +352,25 @@ def measure_stack_performance(catalog):
 
     # Medir push
     start_time = get_time()
-    # TODO Implementar la medición de tiempo para la operación push
+    
+    st.push(stack,catalog)
+    end_time = get_time()
+    top_time = delta_time(start_time, end_time)
+    
 
     # Medir top
     start_time = get_time()
-    # TODO Implementar la medición de tiempo para la operación top
+    
+    st.top(stack)
     end_time = get_time()
     top_time = delta_time(start_time, end_time)
 
     # Medir dequeue
-    # TODO Implementar la medición de tiempo para la operación pop
+    
+    start_time=get_time()
+    st.pop(stack)
+    end_time = get_time()
+    top_time = delta_time(start_time, end_time)
 
     return {
         "push_time": push_time,
