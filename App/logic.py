@@ -57,8 +57,7 @@ def new_logic():
     catalog['authors'] = lt.new_list()
     catalog['tags'] = lt.new_list()
     catalog['book_tags'] = lt.new_list()
-    # TODO Implementar la inicialización de la lista de asociación de libros y tags
-    catalog['books_to_read'] = None
+    catalog['books_to_read'] = lt.new_list()
     catalog["book_sublist"] = None
     return catalog
 
@@ -74,7 +73,7 @@ def load_data(catalog):
     books, authors = load_books(catalog)
     tag_size = load_tags(catalog)
     book_tag_size = load_books_tags(catalog)
-    # TODO Cargar los datos de libros para leer
+    books_to_read = load_books_to_read(catalog)
     return books, authors, tag_size, book_tag_size, books_to_read
 
 
@@ -117,7 +116,10 @@ def load_books_to_read(catalog):
     """
     Carga la información del archivo to_read y los agrega a la lista de libros por leer
     """
-    # TODO Implementar la carga de los libros por leer del archivo to_read
+    toreadfile = data_dir + '/to_read.csv'
+    input_file = csv.DictReader(open(toreadfile, encoding='utf-8'))
+    for book_to_read in input_file:
+        add_book_to_read(catalog, book_to_read)
     return books_to_read_size(catalog)
 
 # Funciones de consulta sobre el catálogo
@@ -128,9 +130,10 @@ def get_books_stack_by_user(catalog, user_id):
     Retorna una pila con los libros que un usuario tiene por leer.
     """
     books_stack = st.new_stack()
-
-    # TODO Completar la función que retorna los libros por leer de un usuario. Se debe usar el TAD Pila para resolver el requerimiento
-
+    for i in range(lt.size(catalog['books_to_read'])):
+        book_to_read = lt.get_element(catalog['books_to_read'], i)
+        if book_to_read['user_id'] == user_id:
+            st.push(books_stack, book_to_read['book_id'])
     return books_stack
 
 
@@ -139,9 +142,18 @@ def get_user_position_on_queue(catalog, user_id, book_id):
     Retorna la posición de un usuario en la cola para leer un libro.
     """
     queue = q.new_queue()
-
-    # TODO Completar la función que retorna la posición de un usuario en la cola para leer un libro. Se debe usar el TAD Cola para resolver el requerimiento.
-
+    position = -1
+    count = 0
+    for i in range(lt.size(catalog['books_to_read'])):
+        book_to_read = lt.get_element(catalog['books_to_read'], i)
+        if book_to_read['book_id'] == book_id:
+            q.enqueue(queue, book_to_read['user_id'])
+    while not q.is_empty(queue):
+        current_user = q.dequeue(queue)
+        count += 1
+        if current_user == user_id:
+            position = count
+            break
     return position
 
 # Funciones para agregar informacion al catalogo
@@ -262,8 +274,7 @@ def book_tag_size(catalog):
 
 
 def books_to_read_size(catalog):
-    # TODO Implementar la función que retorna el tamaño de la lista de libros por leer
-    pass
+    return lt.size(catalog["books_to_read"])
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
